@@ -1,12 +1,13 @@
 {
   "name": "negative-screenshot",
   "version": "1.0.0",
-  "description": "",
+  "description": "The screenshot module used for NegativeJS",
+  "repository": "https://github.com/atdrago/negative-screenshot",
   "main": "index.js",
   "scripts": {
     "build": "cd swift && xcodebuild archive -derivedDataPath $(mktemp -d) -scheme negative-screenshot"
   },
-  "author": "",
+  "author": "Adam Drago <atdrago+negative-screenshot@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "nodobjc": "^2.1.0"
