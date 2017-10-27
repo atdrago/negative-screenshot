@@ -1,0 +1,21 @@
+{
+  "name": "negative-screenshot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd swift && xcodebuild archive -derivedDataPath $(mktemp -d) -scheme negative-screenshot"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "execa": "^0.8.0",
+    "nodobjc": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=8.x"
+  },
+  "os": [
+    "darwin"
+  ]
+}
