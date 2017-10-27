@@ -5,7 +5,8 @@
   "repository": "https://github.com/atdrago/negative-screenshot",
   "main": "index.js",
   "scripts": {
-    "build": "cd swift && xcodebuild archive -derivedDataPath $(mktemp -d) -scheme negative-screenshot"
+    "build": "cd swift && xcodebuild archive -derivedDataPath $(mktemp -d) -scheme negative-screenshot",
+    "postinstall": "npm run build"
   },
   "author": "Adam Drago <atdrago+negative-screenshot@gmail.com>",
   "license": "MIT",
