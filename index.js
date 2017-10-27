@@ -1,7 +1,6 @@
-const execa = require('execa');
 const objc = require('nodobjc');
 const path = require('path');
-// const { spawn } = require('child_process');
+const { spawn } = require('child_process');
 
 objc.framework('Cocoa');
 
@@ -12,23 +11,22 @@ module.exports = function (x, y, width, height) {
         const windowId = objc.NSApplication('sharedApplication')('keyWindow')('windowNumber');
         pool('drain');
 
-        const cmd = execa(
+        const cmd = spawn(
             path.join(__dirname, 'negative-screenshot'),
             [ x, y, width, height, windowId ]
         );
-        const dataArray = [];
 
-        cmd.catch(function (err) {
+        cmd.stderr.on('data', function (err) {
             reject(err);
         });
 
-        cmd.stdout.setEncoding('utf8');
-        cmd.stdout.on('data', function (data) {
+        const dataArray = [];
+        cmd.stdout.on('data', (data) => {
             dataArray.push(data.toString());
         });
-        cmd.stdout.on('close', function () {
+        cmd.on('close', () => {
             const data = dataArray.join('').trim();
             resolve(data);
-        })
+        });
     });
 }
