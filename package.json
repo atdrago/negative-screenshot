@@ -10,9 +10,6 @@
   },
   "author": "Adam Drago <atdrago+negative-screenshot@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-    "nodobjc": "^2.1.0"
-  },
   "engines": {
     "node": ">=8.x"
   },
