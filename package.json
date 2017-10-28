@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "The screenshot module used for NegativeJS",
   "repository": "https://github.com/atdrago/negative-screenshot",
-  "main": "index.js",
+  "main": "js/index.js",
   "scripts": {
     "build": "cd swift && xcodebuild archive -derivedDataPath $(mktemp -d) -scheme negative-screenshot",
     "postinstall": "npm run build"
@@ -15,5 +15,9 @@
   },
   "os": [
     "darwin"
-  ]
+  ],
+  "dependencies": {
+    "execa": "^0.8.0",
+    "uuid": "^3.1.0"
+  }
 }
