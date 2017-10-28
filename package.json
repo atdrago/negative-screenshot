@@ -1,6 +1,6 @@
 {
   "name": "negative-screenshot",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "The screenshot module used for NegativeJS",
   "repository": "https://github.com/atdrago/negative-screenshot",
   "main": "js/index.js",
