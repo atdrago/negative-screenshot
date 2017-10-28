@@ -1,6 +1,8 @@
 const execa = require('execa');
 const path = require('path');
 const uuid = require('uuid/v4');
+const childProcess = require('child_process');
+const BIN = path.join(__dirname, 'negative-screenshot');
 
 const { Rect } = require('./models');
 
@@ -37,13 +39,13 @@ module.exports = function (options = {}) {
             belowWindow.setTitle(uniqueWindowTitle);
         }
 
-        const cmd = execa(
-            path.join(__dirname, 'negative-screenshot'),
+        const cmd = childProcess.spawn(
+            BIN,
             [ JSON.stringify(createSerializableOptions(options, uniqueWindowTitle)) ]
         );
         const dataArray = [];
 
-        cmd.stdout.setEncoding('utf8');
+        // cmd.stdout.setEncoding('utf8');
 
         // Handle errors
         cmd.stderr.on('data', err => {
@@ -58,7 +60,7 @@ module.exports = function (options = {}) {
         cmd.stdout.on('data', data => dataArray.push(data.toString()));
 
         // Resolve with all image data
-        cmd.stdout.on('close', () => {
+        cmd.on('close', () => {
             if (isUniqueWindowTitleNeeded) {
                 belowWindow.setTitle(originalWindowTitle);
             }
