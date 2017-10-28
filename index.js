@@ -1,10 +1,15 @@
 const execa = require('execa');
 const path = require('path');
 const uuid = require('uuid/v4');
-const BIN = path.join(__dirname, 'negative-screenshot');
 
 const { Rect } = require('./models');
 
+const BIN_PATH = path.join(__dirname, 'negative-screenshot')
+
+/**
+ * Create JSON serializable options to pass to binary
+ * @return {Object} An object that can be serialized with JSON.stringify()
+ */
 function createSerializableOptions(options, uniqueWindowTitle) {
     const serializableOptions = {};
 
@@ -39,7 +44,7 @@ module.exports = function (options = {}) {
         }
 
         const cmd = execa(
-            BIN,
+            BIN_PATH,
             [ JSON.stringify(createSerializableOptions(options, uniqueWindowTitle)) ]
         );
         const dataArray = [];
