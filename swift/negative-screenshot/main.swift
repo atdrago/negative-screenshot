@@ -11,27 +11,27 @@ let json = arguments.first!.data(using: .utf8)!
 let options = try JSONDecoder().decode(Options.self, from: json)
 
 // Get the windowId of the window we want to ignore. Default it to 0 which would not ignore any window
-var optionalWindowId: CGWindowID? = options.belowWindowWithId
+var windowId: CGWindowID? = options.belowWindowWithId
 
-if optionalWindowId == nil, let uniqueWindowTitle = options.uniqueWindowTitle {
+if windowId == nil, let uniqueWindowTitle = options.uniqueWindowTitle {
     if let windowInfoList = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID) as? [[ String : Any ]] {
         // Get the window info for window with our target name
         if let windowInfo = windowInfoList.first(where: { $0["kCGWindowName"] as! String == uniqueWindowTitle }) {
-            optionalWindowId = CGWindowID(windowInfo["kCGWindowNumber"] as! Int)
+            windowId = CGWindowID(windowInfo["kCGWindowNumber"] as! Int)
         }
     }
 }
 
-if let windowId = optionalWindowId {
+if let windowId = windowId {
     let cgImage = CGWindowListCreateImage(options.bounds!, .optionOnScreenBelowWindow, windowId, .bestResolution)
 
-    if let image = cgImage {
-        let imageRep = NSBitmapImageRep(cgImage: image)
+    if let cgImage = cgImage {
+        let imageRep = NSBitmapImageRep(cgImage: cgImage)
         let pngData = imageRep.representation(using: .png, properties: [:])
         let base64 = pngData?.base64EncodedString()
 
-        if let base64String = base64 {
-            let uri = "data:image/png;base64," + base64String
+        if let base64 = base64 {
+            let uri = "data:image/png;base64," + base64
             print(uri)
             exit(0)
         }
