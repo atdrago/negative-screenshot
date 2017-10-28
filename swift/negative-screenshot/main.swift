@@ -1,34 +1,40 @@
 import Cocoa
 
-let args = CommandLine.arguments
-let x = Int(args[1]) ?? 0
-let y = Int(args[2]) ?? 0
-let width = Int(args[3]) ?? 100
-let height = Int(args[4]) ?? 100
-let windowTargetTitle = "Negative - Capture"
+struct Options: Decodable {
+    let bounds: CGRect?
+    let belowWindowWithId: CGWindowID?
+    let uniqueWindowTitle: String?
+}
+
+let arguments = CommandLine.arguments.dropFirst()
+let json = arguments.first!.data(using: .utf8)!
+let options = try JSONDecoder().decode(Options.self, from: json)
 
 // Get the windowId of the window we want to ignore. Default it to 0 which would not ignore any window
-var windowId = 0
+var optionalWindowId: CGWindowID? = options.belowWindowWithId
 
-if let windowInfoList = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID) as? [[ String : Any ]] {
-    // Get the window info for window with our target name
-    if let windowInfo = windowInfoList.first(where: { $0["kCGWindowName"] as! String == windowTargetTitle }) {
-        windowId = (windowInfo["kCGWindowNumber"] as! Int)
+if optionalWindowId == nil, let uniqueWindowTitle = options.uniqueWindowTitle {
+    if let windowInfoList = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID) as? [[ String : Any ]] {
+        // Get the window info for window with our target name
+        if let windowInfo = windowInfoList.first(where: { $0["kCGWindowName"] as! String == uniqueWindowTitle }) {
+            optionalWindowId = CGWindowID(windowInfo["kCGWindowNumber"] as! Int)
+        }
     }
 }
 
-let rect = NSMakeRect(CGFloat(x), CGFloat(y), CGFloat(width), CGFloat(height))
-let cgImage = CGWindowListCreateImage(rect, .optionOnScreenBelowWindow, CGWindowID(windowId), .bestResolution)
+if let windowId = optionalWindowId {
+    let cgImage = CGWindowListCreateImage(options.bounds!, .optionOnScreenBelowWindow, windowId, .bestResolution)
 
-if let image = cgImage {
-    let imageRep = NSBitmapImageRep(cgImage: image)
-    let pngData = imageRep.representation(using: .png, properties: [:])
-    let base64 = pngData?.base64EncodedString()
+    if let image = cgImage {
+        let imageRep = NSBitmapImageRep(cgImage: image)
+        let pngData = imageRep.representation(using: .png, properties: [:])
+        let base64 = pngData?.base64EncodedString()
 
-    if let base64String = base64 {
-        let uri = "data:image/png;base64," + base64String
-        print(uri)
-        exit(0)
+        if let base64String = base64 {
+            let uri = "data:image/png;base64," + base64String
+            print(uri)
+            exit(0)
+        }
     }
 }
 
